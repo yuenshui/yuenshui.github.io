@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yuenshui.com/"/>
-  <updated>2017-02-25T13:36:23.000Z</updated>
+  <updated>2017-02-25T13:40:44.000Z</updated>
   <id>http://yuenshui.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yuenshui.com/2017/02/25/How-to-make-the-node-js-application-run-stably/"/>
     <id>http://yuenshui.com/2017/02/25/How-to-make-the-node-js-application-run-stably/</id>
     <published>2017-02-24T16:00:00.000Z</published>
-    <updated>2017-02-25T13:36:23.000Z</updated>
+    <updated>2017-02-25T13:40:44.000Z</updated>
     
     <content type="html"><![CDATA[<h2 id="How-to-make-the-node-js-application-run-stably"><a href="#How-to-make-the-node-js-application-run-stably" class="headerlink" title="How to make the node.js application run stably"></a>How to make the node.js application run stably</h2><p>Node.js程序在越来越多的公司部署在生产环境，程序的稳定运行逐渐被大家所关注。下面我就分享一下这方面的经验，仅供参考。</p>
 <h2 id="一、捕获错误"><a href="#一、捕获错误" class="headerlink" title="一、捕获错误"></a>一、捕获错误</h2><h3 id="try-语句"><a href="#try-语句" class="headerlink" title="try 语句"></a>try 语句</h3><p>try语句捕获错误是Javascript在网页或服务器上最常见也是最简单的捕获错误方式。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">	<span class="comment">// 业务代码</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">catch</span>(e) &#123;</div><div class="line">	<span class="comment">// 异常时执行的代码</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">finally</span> &#123;</div><div class="line">	<span class="comment">// 最后执行的代码</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
@@ -62,7 +62,7 @@
     <link href="http://yuenshui.com/2016/06/27/Centos7-Nginx-PHP7-MySQL5-7-Redis3-2-swoole1-8/"/>
     <id>http://yuenshui.com/2016/06/27/Centos7-Nginx-PHP7-MySQL5-7-Redis3-2-swoole1-8/</id>
     <published>2016-06-26T16:00:00.000Z</published>
-    <updated>2017-02-25T02:05:54.000Z</updated>
+    <updated>2017-02-25T13:40:24.000Z</updated>
     
     <content type="html"><![CDATA[<p>技术更新，好久没有更新开发环境了，根据官方文档和网友的分享吧工作环境编译了一遍，过程分享给大家。<br>centos 7最小化安装（CentOS-7-x86_64-Minimal-1511.iso）</p>
 <p>yum search ifconfig 不然自己ip都看不到<br>yum install net-tools.x86_64 wget</p>
@@ -126,6 +126,8 @@
       <category term="Redis3.2" scheme="http://yuenshui.com/tags/Redis3-2/"/>
     
       <category term="swoole1.8" scheme="http://yuenshui.com/tags/swoole1-8/"/>
+    
+      <category term="node.js" scheme="http://yuenshui.com/tags/node-js/"/>
     
   </entry>
   
