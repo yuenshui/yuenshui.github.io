@@ -1,0 +1,948 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>数独解题器 | Mustang Blog</title><link rel="stylesheet" type="text/css" href="//fonts.css.network/css?family=Source+Code+Pro"><link rel="stylesheet" type="text/css" href="/css/style.css?v=1.2.0"><link rel="stylesheet" type="text/css" href="/css/highlight.css?v=1.2.0"><link rel="Shortcut Icon" href="/favicon.ico"><link rel="bookmark" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">数独解题器</h1><a id="logo" href="/.">Mustang Blog</a><p class="description">天行健，君子以自强不息；地势坤，君子以厚德载物</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div></div><div id="layout" class="layout-g"><div class="layout-l"><div class="content_container"><div class="post"><h1 class="post-title">数独解题器</h1><div class="post-meta">Mar 2, 2017</div><div class="post-content"><p>最近学习算法，就拿数独解题试刀吧。^_^</p>
+<style>.sudokuLeft{padding: 0px 5px 0px 0px;line-height: 42px;}.sudokuFooter,.sudokuLeft{margin:0px;font-size: 22px;text-align: right;font-weight: 800;}.sudokuFooter{line-height: 24px;}.sudokuFooter div{display:inline-block; width:42px;text-align:center;padding:0px;}.sudokuLeft div{width:42px; height:42px;}.sudokuArea, .sudokuArea td{border:0px solid red; padding:0px;vertical-align:top;}.sudokuBox {margin: auto auto 1px; padding:0px;}.sudokuBox tr:nth-child(2n){background:#FFFFFF;!important}.sudokuBox td{width: 40px;height: 40px;padding:0px;    border: 1px solid #d8e2eb;}.sudokuBox div, .sudokuBox input {padding:0px;width: 40px; text-align:center}.sudokuBox input{font-size:22px;height: 24px; background: transparent;}.sudokuBox div{font-size: 12px;height: 12px;line-height: 12px;}.sudokuRight{vertical-align: top; width:250px;}.sudokuRight div {padding: 5px;} .sdkButton{display: inline-block; zoom: 1;*display: inline; vertical-align: baseline; margin: 2px; outline: none;cursor: pointer; text-align: center; text-decoration: none; font: 14px/100% Arial, Helvetica, sans-serif; padding: .5em 2em .55em; text-shadow: 0 1px 1px rgba(0,0,0,.3); -webkit-border-radius: .5em; -moz-border-radius: .5em; border-radius: .5em; -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2); -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2); box-shadow: 0 1px 2px rgba(0,0,0,.2); }.bw{background: #EEEEEE;}.bb{background: #99AAFF;}.historyBox{min-height: 380px;overflow-y: auto;font-size: 12px;}</style>
+
+<table class="sudokuArea"><tr><td width="40" height="370"><div id="sudokuLeft" class="sudokuLeft"></div></td><td width="370"><table class="sudokuBox" id="sudokuBox"></table><div id="sudokuFooter" class="sudokuFooter"></div>　　导入或输入已知的数字，然后点击“计算”按钮，就可以看到数独方格内显示出标注，一直点击“下一步”，可以看到求解过程。右侧的过程描述方便学习数独解法。<br>　　“清空”按钮可以清空所有数字内容，方便重现填入数字。<br>　　“重新计算”按钮方便对数独重新反复观看解题过程。<br></td><td class="sudokuRight"><div><input type="button" id="importSudoku" class="sdkButton bw" value="导入"><input type="button" id="setSudoku" class="sdkButton bw" value="清空"><input type="button" id="cleanButton" class="sdkButton bw" value="重新计算"><input type="button" id="runButton" class="sdkButton" value="计算"><input type="button" id="nextButton" style="display: none;" class="sdkButton" value="下一步"><div class="historyBox" style="padding:0px;"><ol style="margin-left: 30px;" id="historyBox"></ol></div></div></td></tr></table>
+
+<script>
+
+    var html = "";
+    var gSum = 45;
+    var sB = document.getElementById("sudokuBox");
+    var row, cell1, nodeE, style;
+
+    for(var i = 0; i < 9; i++) {
+        row = sB.insertRow(i);
+        for(var j = 0; j < 9; j++) {
+            cell1 = row.insertCell(j);
+            cell1.setAttribute("id", "sudokuPoint" + i + j);
+            cell1.innerHTML = "<div></div><input type=\"text\" />";
+
+            style = "";
+            if(j % 3 == 2) style += "border-right-width:3px;";
+            if(i % 3 == 2) style += "border-bottom-width:3px;";
+            if(j == 0) style += "border-left-width:3px;";
+            if(i == 0) style += "border-top-width:3px;";
+            if(style != "") cell1.style = style;
+        }
+    }
+
+    // init
+    // var sdkData = [
+    //     [7,8,0,0,0,0,0,5,6],
+    //     [9,0,6,0,8,0,2,0,3],
+    //     [0,2,0,5,0,9,0,7,0],
+    //     [0,0,5,0,2,0,1,0,0],
+    //     [0,1,0,0,0,0,0,9,0],
+    //     [0,0,7,0,1,0,4,0,0],
+    //     [0,4,0,3,0,6,0,8,0],
+    //     [8,0,3,0,9,0,7,0,2],
+    //     [5,7,0,0,0,0,0,6,1]
+    // ];
+    var sdkData = [
+        [0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0]
+    ];
+    var rowDoc = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', "I"];
+    var colDoc = ['1', '2', '3', '4', '5', '6', '7', '8', "9"];
+
+    var runData = [];
+    var vacancy = [];
+    var vacData = [];
+
+    var sudokuLeft = document.getElementById("sudokuLeft")
+    var sudokuFooter = document.getElementById("sudokuFooter")
+    for(var i = 0; i < 9; i++) {
+        var note = document.createElement('div');
+        note.innerHTML = rowDoc[i];
+        sudokuLeft.appendChild(note);
+        note = document.createElement('div');
+        note.innerHTML = colDoc[i];
+        sudokuFooter.appendChild(note);
+    }
+
+    document.getElementById("importSudoku").onclick = function() {
+        var html = '<div style="width:100%;text-align:center;margin:0 auto;"><textarea id="importBox" rows="9" cols="15">000000000\r\n000000000\r\n000000000\r\n000000000\r\n000000000\r\n000000000\r\n000000000\r\n000000000\r\n000000000</textarea><br><input type="button" style="width: 80px;padding: 5px;font-size: 16px;margin: 5px;" value="导入" onclick="opener.importSudoku(document.getElementById(\'importBox\').value);window.close();" /></div>';
+        myWindow=window.open('','','width=200, height=200, scrollbars=yes')
+        myWindow.document.write(html);
+        myWindow.focus()
+        return;
+    }
+
+    function importSudoku(content) {
+        var cA = content.split(/\s+/);
+        for(var i = 0; i < 9; i++) for(var j = 0; j < 9; j++) {
+            sdkData[i][j] = typeof cA[i][j] == "undefined" ? 0 : parseInt(cA[i][j]);
+        }
+        cleanHistory();
+        viewInit();
+    }
+
+    function viewInit () {
+        for(var i = 0; i < 9; i++) {
+            for(var j = 0; j < 9; j++) {
+                nodeE = document.getElementById("sudokuPoint" + i + j);
+                nodeE.innerHTML = "<div></div><input type=\"text\" value='" + (sdkData[i][j] > 0 ? sdkData[i][j] : "") + "' />";
+
+                nodeE.className = sdkData[i][j] > 0 ? "bw" : "";
+            }
+        }
+    }
+
+    document.getElementById("setSudoku").onclick = setSudoku;
+
+    function setSudoku() {
+        initData();
+        viewInit();
+        cleanHistory();
+    }
+
+    // 测试
+    // document.getElementById("testButton").onclick = function() {
+    // }
+
+    document.getElementById("cleanButton").onclick = function() {
+        //document.getElementById("nextButton").style.display = "none";
+        for(var i in sdkData) runData[i] = sdkData[i].concat();
+        for(var i in sdkData) vacData[i] = -1;
+
+        vacancy = getVacancy(runData);
+        setNote(runData, vacancy);
+        viewInit();
+        viewNote();
+        cleanHistory();
+        document.getElementById("nextButton").style.display = "";
+        if(prePoint[0] != -1) document.getElementById("sudokuPoint" + prePoint[0] + prePoint[1]).className = "";
+    }
+
+    function initData() {
+        for(var i = 0; i < 9; i++) for (var j = 0; j < 9; j++) sdkData[i][j] = 0;
+    }
+
+    function checkInput() {
+        var v = 0, num = 0;
+        for(var i = 0; i < 9; i++) for (var j = 0; j < 9; j++) {
+            v = parseInt(document.getElementById("sudokuPoint" + i + j).childNodes[1].value);
+            sdkData[i][j] = v ? v : 0;
+            if(v) num++;
+        }
+        return num > 16;
+    }
+
+    var prePoint = [-1, -1];
+    document.getElementById("nextButton").onclick = function() {
+
+        var nodeE, rs, stepString = "", vIndex;
+        var cDoc = {'g': '九宫格', 'col': "列", 'row': '行'}
+
+        var runS = false;
+        for(var i in vacancy) if(vacancy[i][2] == 0) {
+            runS = true; 
+            break;
+        }
+        if(!runS) {
+            console.log("已经计算完成，不需要计算");
+            return;
+        }
+        if(prePoint[0] != -1) document.getElementById("sudokuPoint" + prePoint[0] + prePoint[1]).className = "";
+        // 唯一候选
+        rs = solveEndPoint(runData);
+        if(rs[0] != -1) stepString = "唯一候选法[" + rowDoc[rs[0]] + "," + colDoc[rs[1]] + "]所在" + cDoc[rs[4]] + "只可以是：" + rs[2];
+        console.log("step1:", rs);
+
+
+
+        // solveBaseAban基础摒弃法
+        if(rs[0] == -1) {
+            rs = solveBaseAban(vacancy);
+            console.log("step2:", rs);
+            if(rs[0] != -1) stepString = "基础摒弃法[" + rowDoc[rs[0]] + "," + colDoc[rs[1]] + "]所在" + cDoc[rs[4]] + "只有他可以为：" + rs[2];
+        }
+
+        // 隐式唯一候选
+        if(rs[0] == -1) {
+            rs = solveEndPointHidden(vacancy);
+            console.log("step3:", rs);
+            if(rs[0] != -1) stepString = "隐式唯一候选[" + rowDoc[rs[0]] + "," + colDoc[rs[1]] + "]只可以是：" + rs[2];
+        }
+
+        if(rs[0] != -1) {
+            try {
+                nodeE = document.getElementById("sudokuPoint" + rs[0] + rs[1]);
+                nodeE.className = "bb";
+                nodeE.innerHTML = "<div></div><input type=\"text\" value='" + rs[2] + "' />";
+
+                vIndex = rs[5] ? rs[5] : getVacancyIndex(rs);
+                console.log("vIndex:", vIndex);
+                vacancy[vIndex][2] = rs[2]; 
+                vIndex > -1 && setVacancy(vacancy, vIndex);
+                addHistory(stepString);
+                runData[rs[0]][rs[1]] = rs[2];
+                vacData[rs[0]][rs[1]] = -1;
+            }
+            catch(e) {
+                console.log(e, rs);
+            }
+        }
+        else {
+            console.log("solveYuanyang");
+            var history = solveYuanyang(vacancy);
+            for(var i in history) addHistory(history[i]);
+            history = solveAreaClean(vacancy);
+            for(var i in history) addHistory(history[i]);
+            history = solveYuanyangHidden(vacancy);
+            for(var i in history) addHistory(history[i]);
+            history = solveXwing(vacancy);
+            for(var i in history) addHistory(history[i]);
+        }
+        //console.log(vacancy);
+        viewNote();
+        //console.log(stepString);
+        if(rs[0] != -1) prePoint = rs;
+        //console.log(runData);
+    }
+
+    document.getElementById("runButton").onclick = function() {
+        if(!checkInput()) {alert("至少输入17个数字才可以计算"); return };
+        for(var i in sdkData) runData[i] = sdkData[i].concat();
+        for(var i in sdkData) vacData[i] = -1;
+        //console.log(sdkData);
+        vacancy = getVacancy(runData);
+        setNote(runData, vacancy);
+        viewInit();
+        viewNote();
+        //solveYuanyang(vacancy);
+        //viewNote();
+        cleanHistory();
+        document.getElementById("nextButton").style.display = "";
+    }
+
+    function getVacancyIndex(point) {
+        //console.log("getVacancyIndex:", point);
+        for(var i in vacancy) if(vacancy[i][0] == point[0] && vacancy[i][1] == point[1]) {
+            //console.log(vacancy[i], i);
+            return i;
+        }
+        return -1;
+    }
+
+    function cleanHistory() {
+        document.getElementById("historyBox").innerHTML = "";
+    }
+
+    function addHistory(str) {
+        var oLi = document.createElement('li');
+        oLi.innerHTML = str;
+        document.getElementById("historyBox").appendChild(oLi);
+    }
+
+    function viewNote () {
+        var noteString = "";
+        for(var i in vacancy) {
+            noteString = "";
+            if(vacancy[i][2] == 0) noteString = vacancy[i][3];
+            document.getElementById("sudokuPoint" + vacancy[i][0] + vacancy[i][1]).firstChild.innerHTML = noteString;
+        }
+    }
+
+    function setNote(data, vac) {
+        var point;
+        for(var v in vac) {
+            point = vac[v];
+            pa = [1, 1, 1, 1, 1, 1, 1, 1, 1];
+
+            for(var i = 0; i < 9; i++) {
+                if(data[i][point[1]] == 0) continue;
+                pa[data[i][point[1]] - 1] = 0;
+            }
+
+             for(var j = 0; j < 9; j++) {
+                if(data[point[0]][j] == 0) continue;
+                pa[data[point[0]][j] - 1] = 0;
+            }
+
+            for(var i = parseInt(point[0] / 3) * 3, p1 = 0; p1 < 3; p1++, i++) for(var j = parseInt(point[1] / 3) * 3, p2 = 0; p2 < 3; p2++, j++) {
+                if(data[i][j] == 0) continue;
+                pa[data[i][j] - 1] = 0;
+            }
+
+            for(var i in pa) if(pa[i] != '0') vac[v][3] += "" + (parseInt(i) + 1);
+        }
+    }
+
+    // 遍历出每一个空位，进行尝试解题
+    function setVacancy(data, i) {
+        var point = vacancy[i], xStart, yStart;
+        //console.log("setVacancy:", i, point);
+        xStart = parseInt(point[0] / 3) * 3;
+        yStart = parseInt(point[1] / 3) * 3;
+        for(var x in vacancy) {
+            if(vacancy[x][2] > 0) continue;
+
+            if(vacancy[x][0] == point[0] || 
+                vacancy[x][1] == point[1] || 
+                (vacancy[x][0] >= xStart && vacancy[x][0] < xStart + 3 && vacancy[x][1] >= yStart && vacancy[x][1] < yStart + 3))
+            {
+                //console.log("setPre:", vacancy[x], point[2]);
+                vacancy[x][3] = vacancy[x][3].replace(point[2], "");
+                //console.log("setFre:", vacancy[x]);
+            }
+        }
+    }
+
+    // 遍历出每一个空位，进行尝试解题
+    function getVacancy(data) {
+        var vacancy = [];
+        for(var i = 0; i < 9; i++) {
+            for(var j = 0; j < 9; j++) {
+                if(data[i][j] == 0) {
+                    vacancy.push([i, j, 0, ""]);
+                    vacData[i][j] = vacancy.length - 1;
+                }
+            }
+        }
+        return vacancy;
+    }
+
+    function existDelete(str, char) {
+        var ret = str.indexOf(char);
+        if(ret > -1) str = str.replace(char, '');
+        return [ret, str];
+    }
+
+    function getXY(vi) {
+        return "[" + rowDoc[vacancy[vi][0]] + "," + colDoc[vacancy[vi][1]] + "]";
+    }
+
+    // X-Wing删减法
+    function solveXwing(vac) {
+        //    行数、数字、九宫格索引：vacIndex数组
+        // rowData[0][5]['g00'].push(vi);
+        //    列数、数字、九宫格索引：vacIndex数组
+        // colData[0][5]['g00'].push(vi);
+        var g33 = {}, rowData = {}, colData = {}, gi = "", rI, cI, cC, cSel, repHist = "", historyList = [];
+        var cDoc = {'g': '九宫格', 'col': "列", 'row': '行'}
+        for(var vi in vac) {
+            if(vac[vi][2] != 0) continue;
+            rI = vac[vi][0];
+            cI = vac[vi][1];
+
+            if(!rowData[rI]) rowData[rI] = {};
+            if(!colData[cI]) colData[cI] = {};
+
+            cSel = vac[vi][3];
+            for(var i = cSel.length - 1; i >= 0; i--) {
+                cC = cSel[i];
+
+                if(!rowData[rI][cC]) rowData[rI][cC] = [vi];
+                else rowData[rI][cC].push(vi);
+
+                if(!colData[cI][cC]) colData[cI][cC] = [vi];
+                else colData[cI][cC].push(vi);
+            }
+        }
+        for(var rowN in rowData) for(var num in rowData[rowN]) {
+            var p = rowData[rowN][num];
+            if(p.length != 2) continue;
+            for(var rowN2 in rowData) {
+                if(rowN2 <= rowN || !rowData[rowN2][num] || rowData[rowN2][num].length != 2) continue;
+                var p2 = rowData[rowN2][num];
+                if(vac[p[0]][1] != vac[p2[0]][1] || vac[p[1]][1] != vac[p2[1]][1]) continue;
+                repHist = "X-Wing删减法，" + getXY(p[0]) + "," + getXY(p[1]) + "," + getXY(p2[0]) + "," + getXY(p2[1]) + ",满足X-Wing删减条件，";
+                cDoc = p[0] + "," + p[1] + "," + p2[0] + "," + p2[1];
+                for(var vi in vac) {
+                    if(vac[vi][2] != 0 || cDoc.indexOf(vi) > -1) continue;
+                    if(vac[vi][1] != vac[p[0]][1] && vac[vi][1] != vac[p[1]][1]) continue;
+                    if(vac[vi][3].indexOf(num) > -1) {
+                        historyList.push(repHist + getXY(vi) + "的可选数字" + vac[vi][3] + "中移除数字：" + num);
+                        vac[vi][3] = vac[vi][3].replace(num, '');
+                    }
+                }
+            }
+        }
+
+        for(var colN in colData) for(var num in colData[colN]) {
+            var p = colData[colN][num];
+            if(p.length != 2) continue;
+            for(var colN2 in colData) {
+                if(colN2 <= colN || !colData[colN2][num] || colData[colN2][num].length != 2) continue;
+                var p2 = colData[colN2][num];
+                if(vac[p[0]][0] != vac[p2[0]][0] || vac[p[1]][0] != vac[p2[1]][0]) continue;
+                repHist = "X-Wing删减法，" + getXY(p[0]) + "," + getXY(p[1]) + "," + getXY(p2[0]) + "," + getXY(p2[1]) + ",满足X-Wing删减条件，";
+                cDoc = p[0] + "," + p[1] + "," + p2[0] + "," + p2[1];
+                //console.log("x-wing", colN, colN2, num, cDoc);
+                for(var vi in vac) {
+                    if(vac[vi][2] != 0 || cDoc.indexOf(vi) > -1) continue;
+                    if(vac[vi][0] != vac[p[0]][0] && vac[vi][0] != vac[p[1]][0]) continue;
+                    if(vac[vi][3].indexOf(num) > -1) {
+                        historyList.push(repHist + getXY(vi) + "的可选数字" + vac[vi][3] + "中移除数字：" + num);
+                        vac[vi][3] = vac[vi][3].replace(num, '');
+                    }
+                }
+            }
+        }
+
+        return historyList;
+    }
+
+    function solveAreaClean(vac) {
+        // 九宫推行列
+        // 九宫格索引、行或列、数字、行数或列数：vacIndex数组
+        // g33['g00']['row'][3][0].push(vi);
+        //    行数、数字、九宫格索引：vacIndex数组
+        // rowData[0][5]['g00'].push(vi);
+        //    列数、数字、九宫格索引：vacIndex数组
+        // colData[0][5]['g00'].push(vi);
+        var g33 = {}, rowData = {}, colData = {}, gi = "", rI, cI, cC, cSel, repHist = "", historyList = [];
+        var cDoc = {'g': '九宫格', 'col': "列", 'row': '行'}
+        for(var vi in vac) {
+            if(vac[vi][2] != 0) continue;
+            gi = "g" + parseInt(vac[vi][0] / 3) + parseInt(vac[vi][1] / 3);
+            rI = vac[vi][0];
+            cI = vac[vi][1];
+            if(!g33[gi]) g33[gi] = {'row':{}, 'col':{}};
+            if(!rowData[rI]) rowData[rI] = {};
+            if(!colData[cI]) colData[cI] = {};
+
+            cSel = vac[vi][3];
+            for(var i = cSel.length - 1; i >= 0; i--) {
+                cC = cSel[i];
+                if(!g33[gi]['row'][cC]) g33[gi]['row'][cC] = {};
+                if(!g33[gi]['row'][cC][vac[vi][0]]) g33[gi]['row'][cC][vac[vi][0]] = [vi];
+                else g33[gi]['row'][cC][vac[vi][0]].push(vi);
+
+                if(!g33[gi]['col'][cC]) g33[gi]['col'][cC] = {};
+                if(!g33[gi]['col'][cC][vac[vi][1]]) g33[gi]['col'][cC][vac[vi][1]] = [vi];
+                else g33[gi]['col'][cC][vac[vi][1]].push(vi);
+
+                if(!rowData[rI][cC]) rowData[rI][cC] = {};
+                if(!rowData[rI][cC][gi]) rowData[rI][cC][gi] = [vi];
+                else rowData[rI][cC][gi].push(vi);
+
+                if(!colData[cI][cC]) colData[cI][cC] = {};
+                if(!colData[cI][cC][gi]) colData[cI][cC][gi] = [vi];
+                else colData[cI][cC][gi].push(vi);
+            }
+        }
+    }
+
+    // 候选数区块删减法
+    function solveAreaClean(vac) {
+        // 九宫推行列
+        // 九宫格索引、行或列、数字、行数或列数：vacIndex数组
+        // g33['g00']['row'][3][0].push(vi);
+        //    行数、数字、九宫格索引：vacIndex数组
+        // rowData[0][5]['g00'].push(vi);
+        //    列数、数字、九宫格索引：vacIndex数组
+        // colData[0][5]['g00'].push(vi);
+        var g33 = {}, rowData = {}, colData = {}, gi = "", rI, cI, cC, cSel, repHist = "", historyList = [];
+        var cDoc = {'g': '九宫格', 'col': "列", 'row': '行'}
+        for(var vi in vac) {
+            if(vac[vi][2] != 0) continue;
+            gi = "g" + parseInt(vac[vi][0] / 3) + parseInt(vac[vi][1] / 3);
+            rI = vac[vi][0];
+            cI = vac[vi][1];
+            if(!g33[gi]) g33[gi] = {'row':{}, 'col':{}};
+            if(!rowData[rI]) rowData[rI] = {};
+            if(!colData[cI]) colData[cI] = {};
+
+            cSel = vac[vi][3];
+            for(var i = cSel.length - 1; i >= 0; i--) {
+                cC = cSel[i];
+                if(!g33[gi]['row'][cC]) g33[gi]['row'][cC] = {};
+                if(!g33[gi]['row'][cC][vac[vi][0]]) g33[gi]['row'][cC][vac[vi][0]] = [vi];
+                else g33[gi]['row'][cC][vac[vi][0]].push(vi);
+
+                if(!g33[gi]['col'][cC]) g33[gi]['col'][cC] = {};
+                if(!g33[gi]['col'][cC][vac[vi][1]]) g33[gi]['col'][cC][vac[vi][1]] = [vi];
+                else g33[gi]['col'][cC][vac[vi][1]].push(vi);
+
+                if(!rowData[rI][cC]) rowData[rI][cC] = {};
+                if(!rowData[rI][cC][gi]) rowData[rI][cC][gi] = [vi];
+                else rowData[rI][cC][gi].push(vi);
+
+                if(!colData[cI][cC]) colData[cI][cC] = {};
+                if(!colData[cI][cC][gi]) colData[cI][cC][gi] = [vi];
+                else colData[cI][cC][gi].push(vi);
+            }
+        }
+        var cArr = [], cSel = "";
+        for(var gi in g33) for(var rc in g33[gi]) for(var sn in g33[gi][rc]) {
+            if(Object.keys(g33[gi][rc][sn]).length != 1) continue;
+            //console.log(gi, rc, sn, g33[gi][rc][sn]);
+            cArr = Object.values(g33[gi][rc][sn])[0];
+            cSel = cArr.join(",");
+            repHist = "候选数区块删减法，";
+
+            for(var i in cArr) {
+                repHist += "[" + rowDoc[vac[cArr[i]][0]] + "," + colDoc[vac[cArr[i]][1]] + "]，";
+            }
+            repHist += "中的数字" + sn + "只在所在九宫格的";
+
+            if(rc == 'row') {
+                cX = vac[cArr[0]][0];
+                for(var vi in vac) {
+                    if(vac[vi][2] != 0 || 
+                        vac[vi][0] != cX || 
+                        cSel.indexOf(vi) > -1 || 
+                        vac[vi][3].indexOf(sn) == -1) continue;
+
+                    historyList.push(repHist + rowDoc[vac[cArr[0]][0]] + "行在，同行的[" + rowDoc[vac[vi][0]] + "," + colDoc[vac[vi][1]] + "]的可选数字" + vac[vi][3] + "中去除：" + sn);
+                    vac[vi][3] = vac[vi][3].replace(sn, '');
+                }
+            }
+            else {
+                cY = vac[cArr[0]][1];
+                for(var vi in vac) {
+                    if(vac[vi][2] != 0 || 
+                        vac[vi][1] != cY || 
+                        cSel.indexOf(vi) > -1 || 
+                        vac[vi][3].indexOf(sn) == -1) continue;
+                    historyList.push(repHist + colDoc[vac[cArr[0]][1]] + "列存在，同列的[" + rowDoc[vac[vi][0]] + "," + colDoc[vac[vi][1]] + "]的可选数字" + vac[vi][3] + "中去除：" + sn);
+                    vac[vi][3] = vac[vi][3].replace(sn, '');
+                }
+            }
+        }
+
+        for(rI in rowData) for(var sn in rowData[rI]) {
+            if(Object.keys(rowData[rI][sn]).length != 1) continue;
+            cArr = Object.values(rowData[rI][sn])[0];
+            cSel = cArr.join(",");
+            repHist = "候选数区块删减法，";
+            for(var i in cArr) {
+                repHist += "[" + rowDoc[vac[cArr[i]][0]] + "," + colDoc[vac[cArr[i]][1]] + "]，";
+            }
+            repHist += "所在的" + rowDoc[vac[cArr[0]][0]] + "行中的数字" + sn + "只在一个九宫格中，该九宫格中的";
+            var rowStart = parseInt(vac[cArr[0]][0] / 3) * 3;
+            var colStart = parseInt(vac[cArr[0]][1] / 3) * 3;
+            for(var vi in vac) {
+                if(vac[vi][2] != 0 || 
+                    vac[vi][0] < rowStart || 
+                    vac[vi][0] >= rowStart + 3 ||
+                    vac[vi][1] < colStart || 
+                    vac[vi][1] >= colStart + 3 || 
+                    cSel.indexOf(vi) > -1 ||
+                    vac[vi][3].indexOf(sn) == -1 ) continue;
+
+                    historyList.push(repHist + "[" + rowDoc[vac[vi][0]] + "," + colDoc[vac[vi][1]] + "]的可选数字" + vac[vi][3] + "中去除：" + sn);
+                    vac[vi][3] = vac[vi][3].replace(sn, '');
+            }
+        }
+
+        for(rI in colData) for(var sn in colData[rI]) {
+            if(Object.keys(colData[rI][sn]).length != 1) continue;
+            cArr = Object.values(colData[rI][sn])[0];
+            cSel = cArr.join(",");
+            repHist = "候选数区块删减法，";
+            for(var i in cArr) {
+                repHist += "[" + rowDoc[vac[cArr[i]][0]] + "," + colDoc[vac[cArr[i]][1]] + "]，";
+            }
+            repHist += "所在的" + colDoc[vac[cArr[0]][1]] + "列中的数字" + sn + "只在一个九宫格中，该九宫格中的";
+            var rowStart = parseInt(vac[cArr[0]][0] / 3) * 3;
+            var colStart = parseInt(vac[cArr[0]][1] / 3) * 3;
+            for(var vi in vac) {
+                if(vac[vi][2] != 0 || 
+                    vac[vi][0] < rowStart || 
+                    vac[vi][0] >= rowStart + 3 ||
+                    vac[vi][1] < colStart || 
+                    vac[vi][1] >= colStart + 3 || 
+                    cSel.indexOf(vi) > -1 ||
+                    vac[vi][3].indexOf(sn) == -1 ) continue;
+
+                    historyList.push(repHist + "[" + rowDoc[vac[vi][0]] + "," + colDoc[vac[vi][1]] + "]的可选数字" + vac[vi][3] + "中去除：" + sn);
+                    vac[vi][3] = vac[vi][3].replace(sn, '');
+            }
+        }
+        //console.log(historyList);
+        return historyList;
+        //console.log(JSON.stringify(g33, null, 4));
+    }
+
+    // 基础摒弃法
+    function solveBaseAban(vac) {
+        var rowData = {}, colData = {}, g33 = {}, gi = "", cSel;
+        for(var vi in vac) {
+            if(vac[vi][2] != 0) continue;
+            gi = "g" + parseInt(vac[vi][0] / 3) + parseInt(vac[vi][1] / 3);
+            if(!g33[gi]) g33[gi] = {};
+            if(!rowData[vac[vi][0]]) rowData[vac[vi][0]] = {};
+            if(!colData[vac[vi][1]]) colData[vac[vi][1]] = {};
+            cSel = vac[vi][3];
+            // g33['g00'][3] = [33,39,42]
+            for(var i = cSel.length - 1; i >= 0; i--) {
+                if(!g33[gi][cSel[i]]) g33[gi][cSel[i]] = [];
+                g33[gi][cSel[i]].push(vi);
+
+                if(!rowData[vac[vi][0]][cSel[i]]) rowData[vac[vi][0]][cSel[i]] = [];
+                rowData[vac[vi][0]][cSel[i]].push(vi);
+
+                if(!colData[vac[vi][1]][cSel[i]]) colData[vac[vi][1]][cSel[i]] = [];
+                colData[vac[vi][1]][cSel[i]].push(vi);
+            }
+        }
+
+        for(gi in g33) for(var num in g33[gi]) {
+            if(g33[gi][num].length != 1) continue;
+            var vi = g33[gi][num][0];
+            return [vac[vi][0], vac[vi][1], num, 'baseAban', 'g', vi];
+            break;
+        }
+        for(var row in rowData) for(var num in rowData[row]) {
+            if(rowData[row][num].length != 1) continue;
+            var vi = rowData[row][num][0];
+            return [vac[vi][0], vac[vi][1], num, 'baseAban', 'row', vi];
+            break;
+        }
+        for(var col in colData) for(var num in colData[col]) {
+            if(colData[col][num].length != 1) continue;
+            var vi = colData[col][num][0];
+            return [vac[vi][0], vac[vi][1], num, 'baseAban', 'col', vi];
+            break;
+        }
+        //console.log(g33, rowData, colData);
+        return [-1, -1];
+    }
+
+    // 隐性候选数对删减法（鸳鸯）
+    function solveYuanyangHidden (vac) {
+        var rowN, colN, gN, selStr = "", rowData = {}, colData = {}, g33 = {};
+        var rowStr = {}, colStr = {}, gStr = {}, vacArr = [], historyList = [];
+        //       行号、数字::indexVac数组
+        // rowData[0][3].push(vi)
+        for(var vi in vac) {
+            if(vac[vi][2] != 0) continue;
+            rowN = vac[vi][0];
+            colN = vac[vi][1];
+            gN = 'g' + parseInt(rowN / 3) + parseInt(colN / 3);
+
+            if(!rowData[rowN]) rowData[rowN] = {};
+            if(!colData[colN]) colData[colN] = {};
+            if(!g33[gN]) g33[gN] = {};
+            //console.log(rowN, colN, gN, JSON.stringify(vac[vi]));
+            for(var si = vac[vi][3].length - 1; si >= 0; si--) {
+                selStr = vac[vi][3][si];
+                if(!rowData[rowN][selStr]) rowData[rowN][selStr] = [];
+                rowData[rowN][selStr].push(vi);
+                if(!colData[colN][selStr]) colData[colN][selStr] = [];
+                colData[colN][selStr].push(vi);
+                if(!g33[gN][selStr]) g33[gN][selStr] = [];
+                g33[gN][selStr].push(vi);
+            }
+        }
+
+        for(var rowN in rowData) for(var sn in rowData[rowN]) {
+            if(rowData[rowN][sn].length == 2) {
+                selStr = rowData[rowN][sn].join(',');
+                if(!rowStr[rowN]) rowStr[rowN] = {};
+                if(!rowStr[rowN][selStr]) rowStr[rowN][selStr] = []
+                rowStr[rowN][selStr].push(sn);
+            }
+        }
+        for(var colN in colData) for(var sn in colData[colN]) {
+            if(colData[colN][sn].length == 2) {
+                selStr = colData[colN][sn].join(',');
+                if(!colStr[colN]) colStr[colN] = {};
+                if(!colStr[colN][selStr]) colStr[colN][selStr] = [];
+                colStr[colN][selStr].push(sn);
+            }
+        }
+        for(var gN in g33) for(var sn in g33[gN]) {
+            if(g33[gN][sn].length == 2) {
+                selStr = g33[gN][sn].join(',');
+                if(!gStr[gN]) gStr[gN] = {};
+                if(!gStr[gN][selStr]) gStr[gN][selStr] = [];
+                gStr[gN][selStr].push(sn);
+            }
+        }
+
+        var repHist = "";
+        for(var rowN in rowStr) for(var selStr in rowStr[rowN]) {
+            if(rowStr[rowN][selStr].length != 2) continue;
+            //console.log("row:", rowN, selStr, rowStr[rowN][selStr]);
+            var numStr = rowStr[rowN][selStr].join(',');
+            vacArr = selStr.split(',');
+            repHist = "隐性候选数对删减法，" + numStr + "在" + rowDoc[vac[vacArr[0][0]][0]] + "行只存在于";
+
+            for(var rc in vacArr) {
+                var vi = vacArr[rc];
+                repHist += "[" + rowDoc[vac[vi][0]] + "," + colDoc[vac[vi][1]] + "]，";
+            }
+            repHist += "所以";
+
+            for(var i = 0; i < 2; i++) {
+                var str = vac[vacArr[i]][3];
+                for(var j = str.length - 1; j >= 0; j--) {
+                    if(numStr.indexOf(str[j]) == -1) {
+                        historyList.push(repHist + "[" + rowDoc[vac[vacArr[i]][0]] + "," + colDoc[vac[vacArr[i]][1]] + "]的可选数字" + str + "中去除：" + str[j]);
+                        //console.log(repHist + "[" + rowDoc[vac[vacArr[i]][0]] + "," + colDoc[vac[vacArr[i]][1]] + "]的可选数字" + str + "中去除：" + str[j]);
+                        vac[vacArr[i]][3] = str = str.replace(str[j], '');
+                        //console.log(vac[vacArr[i]]);
+                    }
+                }
+            }
+        }
+        for(var colN in colStr) for(var selStr in colStr[colN]) {
+            if(colStr[colN][selStr].length != 2) continue;
+            //console.log("col:", colN, selStr, colStr[colN][selStr]);
+            var numStr = colStr[colN][selStr].join(',');
+            vacArr = selStr.split(',');
+            repHist = "隐性候选数对删减法，" + numStr + "在" + colDoc[vac[vacArr[0][0]][1]] + "列只存在于";
+
+            for(var rc in vacArr) {
+                var vi = vacArr[rc];
+                repHist += "[" + rowDoc[vac[vi][0]] + "," + colDoc[vac[vi][1]] + "]，";
+            }
+            repHist += "所以";
+
+            for(var i = 0; i < 2; i++) {
+                var str = vac[vacArr[i]][3];
+                for(var j = str.length - 1; j >= 0; j--) {
+                    if(numStr.indexOf(str[j]) == -1) {
+                        historyList.push(repHist + "[" + rowDoc[vac[vacArr[i]][0]] + "," + colDoc[vac[vacArr[i]][1]] + "]的可选数字" + str + "中去除：" + str[j]);
+                        //console.log(repHist + "[" + rowDoc[vac[vacArr[i]][0]] + "," + colDoc[vac[vacArr[i]][1]] + "]的可选数字" + str + "中去除：" + str[j]);
+                        vac[vacArr[i]][3] = str = str.replace(str[j], '');
+                        //console.log(vac[vacArr[i]]);
+                    }
+                }
+            }
+        }
+        for(var gN in gStr) for(var selStr in gStr[gN]) {
+            if(gStr[gN][selStr].length != 2) continue;
+            //console.log("g3:", gN, selStr, gStr[gN][selStr]);
+            var numStr = gStr[gN][selStr].join(',');
+            vacArr = selStr.split(',');
+            repHist = "隐性候选数对删减法，" + numStr + "在[" + rowDoc[vac[vacArr[0]][0]] + "," + colDoc[vac[vacArr[0]][1]] + "]所在九宫格只存在于";
+
+            for(var rc in vacArr) {
+                var vi = vacArr[rc];
+                repHist += "[" + rowDoc[vac[vi][0]] + "," + colDoc[vac[vi][1]] + "]，";
+            }
+            repHist += "所以";
+
+            for(var i = 0; i < 2; i++) {
+                var str = vac[vacArr[i]][3];
+                for(var j = str.length - 1; j >= 0; j--) {
+                    if(numStr.indexOf(str[j]) == -1) {
+                        historyList.push(repHist + "[" + rowDoc[vac[vacArr[i]][0]] + "," + colDoc[vac[vacArr[i]][1]] + "]的可选数字" + str + "中去除：" + str[j]);
+                        //console.log(repHist + "[" + rowDoc[vac[vacArr[i]][0]] + "," + colDoc[vac[vacArr[i]][1]] + "]的可选数字" + str + "中去除：" + str[j]);
+                        vac[vacArr[i]][3] = str = str.replace(str[j], '');
+                        //console.log(vac[vacArr[i]]);
+                    }
+                }
+            }
+        }
+
+        //console.log(historyList);
+        return historyList;
+    }
+
+    // 候选数对删减法（鸳鸯），包括三数集删减法, 目前存在缺陷，出现类似234,234,23 时无法判断
+    function solveYuanyang (vac) {
+        var rowC = {}, colC = {}, g33 = {}, sk, ix, iy, i9, historyList = [];
+        for(var i in vac) {
+            if(vac[i][2] != 0) continue;
+            sk = vac[i][3];
+            ix = vac[i][0];
+            iy = vac[i][1];
+            if(!rowC[ix]) rowC[ix] = {};
+            if(!rowC[ix][sk]) {
+                rowC[ix][sk] = [i];
+            }
+            else {
+                rowC[ix][sk].push(i);
+            }
+
+            if(!colC[iy]) colC[iy] = {};
+            if(!colC[iy][sk]) {
+                colC[iy][sk] = [i];
+            }
+            else {
+                colC[iy][sk].push(i);
+            }
+
+            i9 = "g" + parseInt(vac[i][0] / 3) + parseInt(vac[i][1] / 3);
+            if(!g33[i9]) g33[i9] = {};
+            if(!g33[i9][sk]) {
+                g33[i9][sk] = [i];
+            }
+            else {
+                g33[i9][sk].push(i);
+            }
+        }
+        // console.log("row:", rowC);
+        // console.log("col:", colC);
+        // console.log("i9:", g33);
+        var repRs = [];
+        var repHist = "";
+        var cDoc = "";
+        var cH = "";
+        for(var i in rowC) {// 行，x
+            for(var k in rowC[i]) {// 备选, k 为备选
+                if(k.length < 2 || k.length != rowC[i][k].length) continue;
+                cDoc = "";
+                repHist = "候选数对删减法，在" + rowDoc[i] + "行存在数对" + k + "，";
+
+                for(var rc in rowC[i][k]) {
+                    vi = rowC[i][k][rc];
+                    //console.log(rc, ":", rowC[i][k][rc]);
+                    repHist += "[" + rowDoc[vac[vi][0]] + "," + colDoc[vac[vi][1]] + "]，";
+                    cDoc += vac[vi][1];
+                }
+                //console.log(rowC[i][k], cDoc, repHist);
+                for(var vk in vac) {
+                    // 遍历所有的空块，同行的，如果存在就替换
+                    if(vac[vk][2] == 0 && vac[vk][0] == i && cDoc.indexOf(vac[vk][1]) == -1) {
+                        for(var ind = k.length - 1; ind >= 0; ind--) {
+                            cH = repHist + "该行[" + rowDoc[vac[vk][0]] + "," + colDoc[vac[vk][1]] + "]可选数" + vac[vk][3] + "中去除" + k[ind];
+                            repRs = existDelete(vac[vk][3], k[ind]);
+                            if(repRs[0] > -1) {
+                                vac[vk][3] = repRs[1];
+                                historyList.push(cH);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //console.log("row:", historyList, colC);
+        for(var i in colC) {// 列，x
+            for(var k in colC[i]) {// 备选, k 为备选
+                if(k.length < 2 || k.length != colC[i][k].length) continue;
+                cDoc = "";
+                repHist = "候选数对删减法，在" + colDoc[i] + "列存在数对" + k + "，";
+
+                for(var rc in colC[i][k]) {
+                    vi = colC[i][k][rc];
+                    //console.log(rc, ":", colC[i][k][rc]);
+                    repHist += "(" + rowDoc[vac[vi][0]] + "," + colDoc[vac[vi][1]] + ")，";
+                    cDoc += vi + ",";
+                }
+                //console.log(colC[i][k], cDoc, repHist);
+                for(var vk in vac) {
+                    // 遍历所有的空块，同列的，如果存在就替换
+                    if(vac[vk][2] == 0 && vac[vk][1] == i && cDoc.indexOf(vk) == -1) {
+                        //console.log("find exist:", vac[vk]);
+                        for(var ind = k.length - 1; ind >= 0; ind--) {
+                            cH = repHist + "该列[" + rowDoc[vac[vk][0]] + "," + colDoc[vac[vk][1]] + "]可选数" + vac[vk][3] + "中去除" + k[ind];
+                            repRs = existDelete(vac[vk][3], k[ind]);
+                            if(repRs[0] > -1) {
+                                vac[vk][3] = repRs[1];
+                                historyList.push(cH);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //console.log("col:", historyList);
+        var xStart, yStart;
+        for(var i in g33) {// 列，x
+            for(var k in g33[i]) {// 备选, k 为备选
+                if(k.length < 2 || k.length != g33[i][k].length) continue;
+                cDoc = "";
+                repHist = "候选数对删减法，在" + i + "宫格中存在数对" + k + "，";
+
+                for(var rc in g33[i][k]) {
+                    vi = g33[i][k][rc];
+                    //console.log(rc, ":", g33[i][k][rc], vac[vi]);
+                    repHist += "[" + rowDoc[vac[vi][0]] + "," + colDoc[vac[vi][1]] + "]，";
+                    cDoc += vi + ",";
+                }
+
+                xStart = parseInt(vac[g33[i][k][0]][0] / 3) * 3;
+                yStart = parseInt(vac[g33[i][k][0]][1] / 3) * 3;
+
+                //console.log(g33[i][k], cDoc, repHist, xStart, yStart, g33[i][k][0]);
+                for(var vk in vac) {
+                    // 遍历所有的空块，同行的，如果存在就替换
+                    if(
+                        vac[vk][2] == 0 && 
+                        (
+                            vac[vk][0] >= xStart && 
+                            vac[vk][0] < xStart + 3 && 
+                            vac[vk][1] >= yStart && 
+                            vac[vk][1] < yStart + 3
+                            ) && 
+                        cDoc.indexOf(vk) == -1
+                        )
+                    {
+                        for(var ind = k.length - 1; ind >= 0; ind--) {
+                            cH = repHist + "该九宫格[" + rowDoc[vac[vk][0]] + "," + colDoc[vac[vk][1]] + "]可选数" + vac[vk][3] + "中去除" + k[ind];
+                            repRs = existDelete(vac[vk][3], k[ind]);
+                            //console.log(cH, repRs, vac[vk]);
+                            if(repRs[0] > -1) {
+                                vac[vk][3] = repRs[1];
+                                historyList.push(cH);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //console.log("g33:", historyList);
+        return historyList;
+    }
+
+    // 隐式唯一候选数法
+    function solveEndPointHidden (vac) {
+        for(var i in vac) {
+            //console.log("check:", vac[i]);
+            if(vac[i][2] != 0 || vac[i][3].length > 1) continue;
+            //console.log("fire:", vac[i]);
+            vacancy[i][2] = parseInt(vac[i][3]);
+            //console.log("change:", vac[i]);
+            return [vac[i][0], vac[i][1], vac[i][2], 'endpoint', 'h', i];
+            break;
+        }
+        return [-1, -1];
+    }
+
+    // 唯一候选数法
+    function solveEndPoint(data) {
+        var rowData = {}, colData = {}, g33 = {}, gi = "";
+        for(var vi in vacancy) {
+            if(vacancy[vi][2] != 0) continue;
+            gi = "g" + parseInt(vacancy[vi][0] / 3) + parseInt(vacancy[vi][1] / 3);
+            if(!g33[gi]) g33[gi] = [];
+            if(!rowData[vacancy[vi][0]]) rowData[vacancy[vi][0]] = [];
+            if(!colData[vacancy[vi][1]]) colData[vacancy[vi][1]] = [];
+
+            g33[gi].push(vi);
+            rowData[vacancy[vi][0]].push(vi);
+            colData[vacancy[vi][1]].push(vi);
+        }
+
+        for(gi in g33) {
+            if(g33[gi].length != 1) continue;
+            var vi = g33[gi][0];
+            return [vacancy[vi][0], vacancy[vi][1], vacancy[vi][3], 'endpoint', 'g', vi];
+            break;
+        }
+        for(var i in rowData) {
+            if(rowData[i].length != 1) continue;
+            var vi = rowData[i][0];
+            return [vacancy[vi][0], vacancy[vi][1], vacancy[vi][3], 'endpoint', 'row', vi];
+            break;
+        }
+        for(var i in colData) {
+            if(colData[i].length != 1) continue;
+            var vi = colData[i][0];
+            return [vacancy[vi][0], vacancy[vi][1], vacancy[vi][3], 'endpoint', 'col', vi];
+            break;
+        }
+        // console.log(g33, rowData, colData);
+        return [-1, -1];
+    }
+
+
+
+
+
+</script>
+</div><div class="tags"><a href="/tags/数独/">数独</a><a href="/tags/Javascript/">Javascript</a></div><div class="post-nav"><a href="/2017/02/26/Node-js-sleep/" class="next">Node.js实现sleep的几种办法</a></div></div></div></div><div class="layout-r"><div id="sidebar"><div class="widget"><div class="widget-title"><i class="fa fa-biao"> 标签</i></div><div class="tagcloud"><a href="/tags/node-js/" style="font-size: 15px;">node.js</a> <a href="/tags/Centos7/" style="font-size: 15px;">Centos7</a> <a href="/tags/PHP/" style="font-size: 15px;">PHP</a> <a href="/tags/MySQL5-7/" style="font-size: 15px;">MySQL5.7</a> <a href="/tags/Redis3-2/" style="font-size: 15px;">Redis3.2</a> <a href="/tags/swoole1-8/" style="font-size: 15px;">swoole1.8</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/数独/" style="font-size: 15px;">数独</a> <a href="/tags/Javascript/" style="font-size: 15px;">Javascript</a> <a href="/tags/Node-js/" style="font-size: 15px;">Node.js</a> <a href="/tags/sleep/" style="font-size: 15px;">sleep</a> <a href="/tags/断点续传/" style="font-size: 15px;">断点续传</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-fei"> 归档</i></div><ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2005/10/">十月 2005</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-xie"> 最新文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/03/02/Sudoku-solver/">数独解题器</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/26/Node-js-sleep/">Node.js实现sleep的几种办法</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/25/How-to-make-the-node-js-application-run-stably/">让Node.js程序稳定运行</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/06/27/Centos7-Nginx-PHP7-MySQL5-7-Redis3-2-swoole1-8/">最小化安装Centos7 编译安装Nginx PHP7 MySQL5.7 Redis3.2 swoole1.8</a></li><li class="post-list-item"><a class="post-list-link" href="/2005/10/20/PHP-breakpoint-resume/">PHP 实现文件下载的断点续传</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-fei"> 捐赠</i></div><img src="/img/donate_zhifubao.jpg" width="230"/><img src="/img/donate_weixin.jpg" width="230"/></div></div></div></div><a id="totop" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=1.2.0" async></script><div id="footer"><div class="footer-info"><p><a href="/baidusitemap.xml">网站地图</a> |<a href="/atom.xml">订阅本站</a> |<span>联系博主：<a href="mailto:yuenshui@126.com" target="_blank" class="fa fa-email"> </a><a href="http://weibo.com/enshui/" target="_blank" class="fa fa-weibo"></a><a href="https://github.com/yuenshui" target="_blank" class="fa fa-github"> </a></span></p><p><span> Copyright &copy;<a href="/." rel="nofollow">于恩水(Mustang Yu)</a></span><span> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a></span><span><a rel="nofollow" target="_blank" href="https://github.com/chaooo/hexo-theme-BlueLake"> Theme </a>by<a rel="nofollow" target="_blank" href="https://github.com/chaooo"> Charles.</a></span></p></div></div></div></body></html>
