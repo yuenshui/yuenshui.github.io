@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yuenshui.com/"/>
-  <updated>2017-03-02T08:19:14.000Z</updated>
+  <updated>2017-03-03T03:49:31.000Z</updated>
   <id>http://yuenshui.com/</id>
   
   <author>
@@ -20,12 +20,12 @@
     <link href="http://yuenshui.com/2017/03/02/Sudoku-solver/"/>
     <id>http://yuenshui.com/2017/03/02/Sudoku-solver/</id>
     <published>2017-03-01T16:00:00.000Z</published>
-    <updated>2017-03-02T08:19:14.000Z</updated>
+    <updated>2017-03-03T03:49:31.000Z</updated>
     
     <content type="html"><![CDATA[<p>最近学习算法，就拿数独解题试刀吧。^_^</p>
-<style>.sudokuLeft{padding: 0px 5px 0px 0px;line-height: 42px;}.sudokuFooter,.sudokuLeft{margin:0px;font-size: 22px;text-align: right;font-weight: 800;}.sudokuFooter{line-height: 24px;}.sudokuFooter div{display:inline-block; width:42px;text-align:center;padding:0px;}.sudokuLeft div{width:42px; height:42px;}.sudokuArea, .sudokuArea td{border:0px solid red; padding:0px;vertical-align:top;}.sudokuBox {margin: auto auto 1px; padding:0px;}.sudokuBox tr:nth-child(2n){background:#FFFFFF;!important}.sudokuBox td{width: 40px;height: 40px;padding:0px;    border: 1px solid #d8e2eb;}.sudokuBox div, .sudokuBox input {padding:0px;width: 40px; text-align:center}.sudokuBox input{font-size:22px;height: 24px; background: transparent;}.sudokuBox div{font-size: 12px;height: 12px;line-height: 12px;}.sudokuRight{vertical-align: top; width:250px;}.sudokuRight div {padding: 5px;} .sdkButton{display: inline-block; zoom: 1;*display: inline; vertical-align: baseline; margin: 2px; outline: none;cursor: pointer; text-align: center; text-decoration: none; font: 14px/100% Arial, Helvetica, sans-serif; padding: .5em 2em .55em; text-shadow: 0 1px 1px rgba(0,0,0,.3); -webkit-border-radius: .5em; -moz-border-radius: .5em; border-radius: .5em; -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2); -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2); box-shadow: 0 1px 2px rgba(0,0,0,.2); }.bw{background: #EEEEEE;}.bb{background: #99AAFF;}.historyBox{min-height: 380px;overflow-y: auto;font-size: 12px;}</style>
+<style>.sudokuLeft{padding: 0px 5px 0px 0px;line-height: 42px;}.sudokuFooter,.sudokuLeft{margin:0px;font-size: 22px;text-align: right;font-weight: 800;}.sudokuFooter{line-height: 24px;}.sudokuFooter div{display:inline-block; width:42px;text-align:center;padding:0px;}.sudokuLeft div{width:42px; height:42px;}.sudokuArea, .sudokuArea td{border:0px solid red; padding:0px;vertical-align:top;}.sudokuBox {margin: auto auto 1px; padding:0px;}.sudokuBox tr:nth-child(2n){background:#FFFFFF;!important}.sudokuBox td{width: 40px;height: 40px;padding:0px;    border: 1px solid #d8e2eb;}.sudokuBox div, .sudokuBox input {padding:0px;width: 40px; text-align:center}.sudokuBox input{font-size:22px;height: 24px; background: transparent;}.sudokuBox div{font-size: 12px;height: 12px;line-height: 12px;}.sudokuRight{vertical-align: top; width:250px;}.sudokuRight div {padding: 5px;} .sdkButton{display: inline-block; zoom: 1;*display: inline; vertical-align: baseline; margin: 2px; outline: none;cursor: pointer; text-align: center; text-decoration: none; font: 14px/100% Arial, Helvetica, sans-serif; padding: .5em .8em .55em; text-shadow: 0 1px 1px rgba(0,0,0,.3); -webkit-border-radius: .5em; -moz-border-radius: .5em; border-radius: .5em; -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2); -moz-box-shadow: 0 1px 2px rgba(0,0,0,.2); box-shadow: 0 1px 2px rgba(0,0,0,.2); }.bw{background: #EEEEEE;}.bb{background: #99AAFF;}.historyBox{min-height: 380px;overflow-y: auto;font-size: 12px;}</style>
 
-<table class="sudokuArea"><tr><td width="40" height="370"><div id="sudokuLeft" class="sudokuLeft"></div></td><td width="370"><table class="sudokuBox" id="sudokuBox"></table><div id="sudokuFooter" class="sudokuFooter"></div>　　导入或输入已知的数字，然后点击“计算”按钮，就可以看到数独方格内显示出标注，一直点击“下一步”，可以看到求解过程。右侧的过程描述方便学习数独解法。<br>　　“清空”按钮可以清空所有数字内容，方便重现填入数字。<br>　　“重新计算”按钮方便对数独重新反复观看解题过程。<br></td><td class="sudokuRight"><div><input type="button" id="importSudoku" class="sdkButton bw" value="导入"><input type="button" id="setSudoku" class="sdkButton bw" value="清空"><input type="button" id="cleanButton" class="sdkButton bw" value="重新计算"><input type="button" id="runButton" class="sdkButton" value="计算"><input type="button" id="nextButton" style="display: none;" class="sdkButton" value="下一步"><div class="historyBox" style="padding:0px;"><ol style="margin-left: 30px;" id="historyBox"></ol></div></div></td></tr></table>
+<table class="sudokuArea"><tr><td width="40" height="370"><div id="sudokuLeft" class="sudokuLeft"></div></td><td width="370"><table class="sudokuBox" id="sudokuBox"></table><div id="sudokuFooter" class="sudokuFooter"></div><p><input type="button" id="importSudoku" class="sdkButton bw" value="导入"><input type="button" id="setSudoku" class="sdkButton bw" value="清空"><input type="button" id="cleanButton" class="sdkButton bw" value="重新计算"><input style="display:none" type="button" id="testButton" class="sdkButton" value="测试"><input type="button" id="runButton" class="sdkButton" value="计算"><input type="button" id="nextButton" style="display: none;" class="sdkButton" value="下一步"></p><p>　　导入或输入已知的数字，然后点击“计算”按钮，就可以看到数独方格内显示出标注，一直点击“下一步”，可以看到求解过程。右侧的过程描述方便学习数独解法。</p><p>　　“清空”按钮可以清空所有数字内容，方便重现填入数字。</p><p>　　“重新计算”按钮方便对数独重新反复观看解题过程。</p><br></td><td class="sudokuRight"><div><div class="historyBox" style="padding:0px;"><ol style="margin-left: 30px;" id="historyBox"></ol></div></div></td></tr></table>
 
 <script>
 
@@ -50,18 +50,6 @@
         }
     }
 
-    // init
-    // var sdkData = [
-    //     [7,8,0,0,0,0,0,5,6],
-    //     [9,0,6,0,8,0,2,0,3],
-    //     [0,2,0,5,0,9,0,7,0],
-    //     [0,0,5,0,2,0,1,0,0],
-    //     [0,1,0,0,0,0,0,9,0],
-    //     [0,0,7,0,1,0,4,0,0],
-    //     [0,4,0,3,0,6,0,8,0],
-    //     [8,0,3,0,9,0,7,0,2],
-    //     [5,7,0,0,0,0,0,6,1]
-    // ];
     var sdkData = [
         [0,0,0,0,0,0,0,0,0],
         [0,0,0,0,0,0,0,0,0],
@@ -78,7 +66,7 @@
 
     var runData = [];
     var vacancy = [];
-    var vacData = [];
+    var vacData = [[-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1],[-1,-1,-1,-1,-1,-1,-1,-1,-1]];
 
     var sudokuLeft = document.getElementById("sudokuLeft")
     var sudokuFooter = document.getElementById("sudokuFooter")
@@ -104,8 +92,15 @@
         for(var i = 0; i < 9; i++) for(var j = 0; j < 9; j++) {
             sdkData[i][j] = typeof cA[i][j] == "undefined" ? 0 : parseInt(cA[i][j]);
         }
-        cleanHistory();
+        for(var i in sdkData) runData[i] = sdkData[i].concat();
+
+        vacancy = getVacancy(runData);
+        setNote(runData, vacancy);
         viewInit();
+        viewNote();
+        cleanHistory();
+        document.getElementById("nextButton").style.display = "";
+        if(prePoint[0] != -1) document.getElementById("sudokuPoint" + prePoint[0] + prePoint[1]).className = "";
     }
 
     function viewInit () {
@@ -128,13 +123,13 @@
     }
 
     // 测试
-    // document.getElementById("testButton").onclick = function() {
-    // }
+    document.getElementById("testButton").onclick = function() {
+        solveNakedTriplet(vacancy);
+    }
 
     document.getElementById("cleanButton").onclick = function() {
         //document.getElementById("nextButton").style.display = "none";
         for(var i in sdkData) runData[i] = sdkData[i].concat();
-        for(var i in sdkData) vacData[i] = -1;
 
         vacancy = getVacancy(runData);
         setNote(runData, vacancy);
@@ -224,6 +219,10 @@
             for(var i in history) addHistory(history[i]);
             history = solveXwing(vacancy);
             for(var i in history) addHistory(history[i]);
+            history = solveXYwing(vacancy);
+            for(var i in history) addHistory(history[i]);
+            history = solveNakedTriplet
+            for(var i in history) addHistory(history[i]);
         }
         //console.log(vacancy);
         viewNote();
@@ -235,7 +234,7 @@
     document.getElementById("runButton").onclick = function() {
         if(!checkInput()) {alert("至少输入17个数字才可以计算"); return };
         for(var i in sdkData) runData[i] = sdkData[i].concat();
-        for(var i in sdkData) vacData[i] = -1;
+        //for(var i in sdkData) vacData[i] = -1;
         //console.log(sdkData);
         vacancy = getVacancy(runData);
         setNote(runData, vacancy);
@@ -342,6 +341,388 @@
 
     function getXY(vi) {
         return "[" + rowDoc[vacancy[vi][0]] + "," + colDoc[vacancy[vi][1]] + "]";
+    }
+
+    // 三链数删减法
+    function solveNakedTriplet(vac) {
+        var historyList = [];
+        // 遍历每一行
+        for(var i = 0; i < 9; i++) for(var j = 0; j < 9; j++) {// 遍历每一个方格
+            var cPi = vacData[i][j];    // vac索引
+            if(cPi == -1) continue;
+            var cP = vacancy[cPi];        // vac元素
+            console.log("row p1:", i, j, vacData[i][j], cP);
+            var cStr = cP[3];            // 可选数字
+            if(cStr.length != 2 && cStr.length != 3) continue;
+
+            for(var j2 = j + 1; j2 < 9; j2++) {
+                var cPi2 = vacData[i][j2];    // vac索引
+                if(cPi2 == -1) continue;
+                var cP2 = vacancy[cPi2];        // vac元素
+                console.log("       p2:", i, j2, vacData[i][j2], cP2);
+                var cStr2 = cP2[3];            // 可选数字
+
+                var fullStr = "";
+                if(cStr.length == 3) {
+                    if(cStr2.length == 3) {
+                        if(cStr != cStr2) continue;
+                        else {
+                            fullStr = cStr;
+                        }
+                    }
+                    else if(cStr2.length == 2) {
+                        if(cStr.indexOf(cStr2[0]) == -1 || cStr.indexOf(cStr2[1]) == -1) continue;
+                        fullStr = cStr;
+                    }
+                    else continue;
+                }
+                else {
+                    if(cStr2.length == 2) {
+                        if(cStr == cStr2) continue; // 数对，跳过
+                        if(cStr2.indexOf(cStr[0]) > -1) {
+                            fullStr = [cStr2[0], cStr2[1], cStr[1]].sort().join();
+                        }
+                        else if(cStr2.indexOf(cStr[1]) > -1) {
+                            fullStr = [cStr2[0], cStr2[1], cStr[0]].sort().join();
+                        }
+                        else continue;
+                    }
+                    else if(cStr2.length == 3) {
+                        if(cStr2.indexOf(cStr[0]) == -1 || cStr2.indexOf(cStr[1]) == -1) continue;
+
+                        fullStr = cStr2;
+                    }
+                    else continue;
+                }
+                console.log("       fulstr:", fullStr);
+                if(fullStr == "") continue;
+                for (var j3 = j2 + 1; j3 < 9; j3++) {
+                    var cPi3 = vacData[i][j3];    // vac索引
+                    if(cPi3 == -1) continue;
+                    var cP3 = vacancy[cPi3];        // vac元素
+                    console.log("         p3:", i, j3, vacData[i][j3], cP3);
+                    var cStr3 = cP3[3];            // 可选数字
+                    var reSearch = new RegExp("[" + fullStr + "]");
+
+                    if(cStr3.length == 2) {
+                        if(fullStr.indexOf(cStr3[0]) == -1 || fullStr.indexOf(cStr3[1]) == -1) continue;
+                        if(cStr3.search(reSearch) == -1) continue;
+
+                    }
+                    else if(cStr3 == fullStr) {
+                    }
+                    else continue;
+
+                    for(var j4 = 0; j4 < 9; j4++) {
+                        if(j4 == j || j4 == j3 || j4 == j2) continue;
+                        var cPi4 = vacData[i][j4];    // vac索引
+                        if(cPi4 == -1) continue;
+                        var cP4 = vacancy[cPi4];        // vac元素
+                        console.log("           p4:", i, j4, vacData[i][j4], cP4);
+                        var cStr4 = cP4[3];            // 可选数字
+                        for(var n = 0; n < 3; n++) {
+                            if(cStr4.indexOf(fullStr[n]) == -1) continue;
+                            historyList.push("三链数删减法，" + getXY(cPi) + "," + getXY(cPi2) + "," + getXY(cPi3) + ",三格的可选数字是" + fullStr + ",同行的" + getXY(cPi4) + "可选数字" + cStr4 + "中去除数字:" + fullStr[n]);
+                            vacancy[cPi4][3] = cStr4.replace(fullStr[n], '');
+                            console.log("           replace:", vacancy[cPi4], fullStr[n]);
+                        }
+                    }
+                }
+            }
+        }
+        // 遍历每一列
+
+        for(var i = 0; i < 9; i++) for(var j = 0; j < 9; j++) {// 遍历每一个方格
+            var cPi = vacData[j][i];    // vac索引
+            if(cPi == -1) continue;
+            var cP = vacancy[cPi];        // vac元素
+            console.log("col p1:", j, i, vacData[j][i], cP);
+            var cStr = cP[3];            // 可选数字
+            if(cStr.length != 2 && cStr.length != 3) continue;
+
+            for(var j2 = j + 1; j2 < 9; j2++) {
+                var cPi2 = vacData[j2][i];    // vac索引
+                if(cPi2 == -1) continue;
+                var cP2 = vacancy[cPi2];        // vac元素
+                console.log("    p2:", j2, i, vacData[j2][i], cP2);
+                var cStr2 = cP2[3];            // 可选数字
+
+                var fullStr = "";
+                if(cStr.length == 3) {
+                    if(cStr2.length == 3) {
+                        if(cStr != cStr2) continue;
+                        else {
+                            fullStr = cStr;
+                        }
+                    }
+                    else if(cStr2.length == 2) {
+                        if(cStr.indexOf(cStr2[0]) == -1 || cStr.indexOf(cStr2[1]) == -1) continue;
+                        fullStr = cStr;
+                    }
+                    else continue;
+                }
+                else {
+                    if(cStr2.length == 2) {
+                        if(cStr == cStr2) continue; // 数对，跳过
+                        if(cStr2.indexOf(cStr[0]) > -1) {
+                            fullStr = [cStr2[0], cStr2[1], cStr[1]].sort().join();
+                        }
+                        else if(cStr2.indexOf(cStr[1]) > -1) {
+                            fullStr = [cStr2[0], cStr2[1], cStr[0]].sort().join();
+                        }
+                        else continue;
+                    }
+                    else if(cStr2.length == 3) {
+                        if(cStr2.indexOf(cStr[0]) == -1 || cStr2.indexOf(cStr[1]) == -1) continue;
+
+                        fullStr = cStr2;
+                    }
+                    else continue;
+                }
+                console.log("    fullStr:", fullStr);
+                if(fullStr == "") continue;
+                for (var j3 = j2 + 1; j3 < 9; j3++) {
+                    var cPi3 = vacData[j3][i];    // vac索引
+                    if(cPi3 == -1) continue;
+                    var cP3 = vacancy[cPi3];        // vac元素
+                    console.log("        p3:", j3, i, vacData[j3][i], cP3);
+                    var cStr3 = cP3[3];            // 可选数字
+                    var reSearch = new RegExp("[" + fullStr + "]");
+
+                    if(cStr3.length == 2) {
+                        if(fullStr.indexOf(cStr3[0]) == -1 || fullStr.indexOf(cStr3[1]) == -1) continue;
+                        if(cStr3.search(reSearch) == -1) continue;
+                    }
+                    else if(cStr3 == fullStr) {
+                    }
+                    else continue;
+
+                    for(var j4 = 0; j4 < 9; j4++) {
+                        if(j4 == j || j4 == j3 || j4 == j2) continue;
+                        var cPi4 = vacData[j4][i];    // vac索引
+                        if(cPi4 == -1) continue;
+                        var cP4 = vacancy[cPi4];        // vac元素
+                        console.log("            p4:", j4, i, vacData[j4][i], cP4);
+                        var cStr4 = cP4[3];            // 可选数字
+                        for(var n = 0; n < 3; n++) {
+                            if(cStr4.indexOf(fullStr[n]) == -1) continue;
+                            historyList.push("三链数删减法，" + getXY(cPi) + "," + getXY(cPi2) + "," + getXY(cPi3) + ",三格的可选数字是" + fullStr + ",同列的" + getXY(cPi4) + "可选数字" + cStr4 + "中去除数字:" + fullStr[n]);
+                            vacancy[cPi4][3] = cStr4.replace(fullStr[n], '');
+                            console.log("            replace:", vacancy[cPi4], fullStr[n]);
+                        }
+                    }
+                }
+            }
+        }
+
+        for(var g33i = 0, rowStart = 0; g33i < 3; ++g33i, rowStart = g33i * 3)
+        for(var g33j = 0, colStart = 0; g33j < 3; ++g33j, colStart = g33j * 3)
+        for(var i = rowStart; i < rowStart + 3; i++)
+        for(var j = colStart; j < colStart + 3; j++) {// 遍历每一个方格
+            var cPi = vacData[i][j];    // vac索引
+            if(cPi == -1) continue;
+            var cP = vacancy[cPi];        // vac元素
+            console.log("g3 p1:", i, j, vacData[i][j], cP);
+            var cStr = cP[3];            // 可选数字
+            if(cStr.length != 2 && cStr.length != 3) continue;
+
+            for(var i2 = rowStart; i2 < rowStart + 3; i2++) for(var j2 = colStart; j2 < colStart + 3; j2++) {
+                if(i == i2 && j == j2) continue;
+                var cPi2 = vacData[i2][j2];    // vac索引
+                if(cPi2 == -1) continue;
+                var cP2 = vacancy[cPi2];        // vac元素
+                console.log("    p2:", i2, j2, vacData[i2][j2], cP2);
+                var cStr2 = cP2[3];            // 可选数字
+
+                var fullStr = "";
+                if(cStr.length == 3) {
+                    if(cStr2.length == 3) {
+                        if(cStr != cStr2) continue;
+                        else {
+                            fullStr = cStr;
+                        }
+                    }
+                    else if(cStr2.length == 2) {
+                        if(cStr.indexOf(cStr2[0]) == -1 || cStr.indexOf(cStr2[1]) == -1) continue;
+                        fullStr = cStr;
+                    }
+                    else continue;
+                }
+                else {
+                    if(cStr2.length == 2) {
+                        if(cStr == cStr2) continue; // 数对，跳过
+                        if(cStr2.indexOf(cStr[0]) > -1) {
+                            fullStr = [cStr2[0], cStr2[1], cStr[1]].sort().join();
+                        }
+                        else if(cStr2.indexOf(cStr[1]) > -1) {
+                            fullStr = [cStr2[0], cStr2[1], cStr[0]].sort().join();
+                        }
+                        else continue;
+                    }
+                    else if(cStr2.length == 3) {
+                        if(cStr2.indexOf(cStr[0]) == -1 || cStr2.indexOf(cStr[1]) == -1) continue;
+
+                        fullStr = cStr2;
+                    }
+                    else continue;
+                }
+                console.log("    fullStr:", fullStr);
+                if(fullStr == "") continue;
+                for(var i3 = rowStart; i3 < rowStart + 3; i3++) for(var j3 = colStart; j3 < colStart + 3; j3++) {
+                    if((i3 == i && j3 == j) || (i3 == i2 && j3 == j2)) continue;
+                    var cPi3 = vacData[i3][j3];    // vac索引
+                    if(cPi3 == -1) continue;
+                    var cP3 = vacancy[cPi3];        // vac元素
+                    console.log("        p3:", i3, j3, vacData[i3][j3], cP3);
+                    var cStr3 = cP3[3];            // 可选数字
+                    var reSearch = new RegExp("[" + fullStr + "]");
+
+                    if(cStr3.length == 2) {
+                        if(fullStr.indexOf(cStr3[0]) == -1 || fullStr.indexOf(cStr3[1]) == -1) continue;
+                        if(cStr3.search(reSearch) == -1) continue;
+
+                    }
+                    else if(cStr3.length == fullStr) {
+
+                    }
+                    else continue;
+                    for(var i4 = rowStart; i4 < rowStart + 3; i4++) for(var j4 = colStart; j4 < colStart + 3; j4++) {
+                        if((i4 == i && j4 == j) || (i4 == i2 && j4 == j2) || (i4 == i3 && j4 == j3)) continue;
+                        var cPi4 = vacData[i4][j4];    // vac索引
+                        if(cPi4 == -1) continue;
+                        var cP4 = vacancy[cPi4];        // vac元素
+                        console.log("            p4:", i4, j4, vacData[i4][j4], cP4);
+                        var cStr4 = cP4[3];            // 可选数字
+                        for(var n = 0; n < 3; n++) {
+                            if(cStr4.indexOf(fullStr[n]) == -1) continue;
+                            historyList.push("三链数删减法，" + getXY(cPi) + "," + getXY(cPi2) + "," + getXY(cPi3) + ",三格的可选数字是" + fullStr + ",同九宫格的" + getXY(cPi4) + "可选数字" + cStr4 + "中去除数字:" + fullStr[n]);
+                            vacancy[cPi4][3] = cStr4.replace(fullStr[n], '');
+                            console.log("            replace:", vacancy[cPi4], fullStr[n]);
+                        }
+                    }
+                }
+            }
+        }
+        console.log(historyList);
+        return historyList;
+    }
+
+    // XY-Wing
+    function solveXYwing(vac) {
+        var rowData = {}, historyList = [];
+        for(var i = 0; i < 9; i++) {// 遍历每一行
+            for(var j = 0; j < 9; j++) {// 遍历每一个方格
+                cPi = vacData[i][j];    // vac索引
+                if(cPi == -1) continue;
+                cP = vacancy[cPi];        // vac元素
+                console.log("row:", i, j, vacData[i][j], cP);
+                cStr = cP[3];            // 可选数字
+                if(cStr.length != 2) continue;
+                for(var k = j + 1; k < 9; k++) {// 取一个方格，向下遍历方格与之匹配
+                    var wingX, wingY, wingZ;
+                    cPi2 = vacData[i][k];
+                    if(cPi2 == -1) continue;
+                    cP2 = vacancy[cPi2];
+                    console.log("    row:", i, k, vacData[i][k], cP2);
+                    cStr2 = cP2[3];
+                    if(cStr2.length != 2) continue;
+                    if(cStr2 == cStr || (cStr2.indexOf(cStr[0]) == -1 && cStr2.indexOf(cStr[0]) == -1)) continue;
+                    if(cStr2.indexOf(cStr[0]) > -1) {
+                        wingX = cStr[0];
+                        wingY = cStr[1];
+                    }
+                    else {
+                        wingX = cStr[1];
+                        wingY = cStr[2];
+                    }
+                    wingZ = cStr2.replace(wingX, '');
+
+                    for(var i2 = 0; i2 < 9; i2++) {
+                        if(i == i2) continue;
+
+                        cPi3 = vacData[i2][j];
+                        if(cPi3 == -1) continue;
+                        cP3 = vacancy[cPi3];
+                        console.log("        row:", i2, j, vacData[i2][j], cP3);
+                        cStr3 = cP3[3];
+
+                        cPi4 = vacData[i2][k];
+                        if(cPi4 == -1) continue;
+                        cP4 = vacancy[cPi4];
+                        console.log("        row:", i2, k, vacData[i2][k], cP4);
+                        cStr4 = cP4[3];
+                        var wingYZ = wingY > wingZ ? wingZ + "" + wingY : wingY + "" + wingZ;
+
+                        if(cStr3 == wingYZ) {
+                            historyList.push("XY-Wing删减法，" + getXY(cPi) + "," + getXY(cPi2) + "," + getXY(cPi3) + "构成XY-wing删减法条件，" + getXY(cPi4) + "的可选数字" + cStr4 + "中移除数字：" + wingZ);
+                            vacancy[vacData[i2][k]][3] = cStr4.replace(wingZ, '');
+                        }
+                        else if(cStr4 == wingYZ) {
+                            historyList.push("XY-Wing删减法，" + getXY(cPi) + "," + getXY(cPi2) + "," + getXY(cPi4) + "构成XY-wing删减法条件，" + getXY(cPi3) + "的可选数字" + cStr3 + "中移除数字：" + wingY);
+                            vacancy[vacData[i2][j]][3] = cStr4.replace(wingY, '');
+                        }
+
+                    }
+                }
+            }
+        }
+
+
+        for(var i = 0; i < 9; i++) {// 遍历每一列
+            for(var j = 0; j < 9; j++) {// 遍历每一个方格
+                cPi = vacData[j][i];    // vac索引
+                if(cPi == -1) continue;
+                cP = vacancy[cPi];        // vac元素
+                console.log(i, j, vacData[j][i], cP);
+                cStr = cP[3];            // 可选数字
+                if(cStr.length != 2) continue;
+                for(var k = j + 1; k < 9; k++) {// 取一个方格，向下遍历方格与之匹配
+                    var wingX, wingY, wingZ;
+                    cPi2 = vacData[k][i];
+                    if(cPi2 == -1) continue;
+                    cP2 = vacancy[cPi2];
+                    cStr2 = cP2[3];
+                    if(cStr2.length != 2) continue;
+                    if(cStr2 == cStr || (cStr2.indexOf(cStr[0]) == -1 && cStr2.indexOf(cStr[0]) == -1)) continue;
+                    if(cStr2.indexOf(cStr[0]) > -1) {
+                        wingX = cStr[0];
+                        wingY = cStr[1];
+                    }
+                    else {
+                        wingX = cStr[1];
+                        wingY = cStr[2];
+                    }
+                    wingZ = cStr2.replace(wingX, '');
+
+                    for(var i2 = 0; i2 < 9; i2++) {
+                        if(i == i2) continue;
+
+                        cPi3 = vacData[j][i2];
+                        if(cPi3 == -1) continue;
+                        cP3 = vacancy[cPi3];
+                        cStr3 = cP3[3];
+
+                        cPi4 = vacData[i2][k];
+                        if(cPi4 == -1) continue;
+                        cP4 = vacancy[cPi4];
+                        cStr4 = cP4[3];
+                        var wingYZ = wingY > wingZ ? wingZ + "" + wingY : wingY + "" + wingZ;
+
+                        if(cStr3 == wingYZ) {
+                            historyList.push("XY-Wing删减法，" + getXY(cPi) + "," + getXY(cPi2) + "," + getXY(cPi3) + "构成XY-wing删减法条件，" + getXY(cPi4) + "的可选数字" + cStr4 + "中移除数字：" + wingZ);
+                            vacancy[vacData[k][i2]][3] = cStr4.replace(wingZ, '');
+                        }
+                        else if(cStr4 == wingYZ) {
+                            historyList.push("XY-Wing删减法，" + getXY(cPi) + "," + getXY(cPi2) + "," + getXY(cPi4) + "构成XY-wing删减法条件，" + getXY(cPi3) + "的可选数字" + cStr3 + "中移除数字：" + wingY);
+                            vacancy[vacData[j][i2]][3] = cStr4.replace(wingY, '');
+                        }
+
+                    }
+                }
+            }
+        }
+        console.log(historyList);
+        return historyList;
     }
 
     // X-Wing删减法
@@ -965,11 +1346,7 @@
     }
 
 
-
-
-
-</script>
-]]></content>
+</script>]]></content>
     
     <summary type="html">
     
