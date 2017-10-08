@@ -4,6 +4,29 @@
 
     
   <url>
+    <loc>http://yuenshui.com/2017/09/15/%E6%95%B0%E6%8D%AE%E5%BA%93NeDB%E6%96%87%E6%A1%A3%E7%BF%BB%E8%AF%91/</loc>
+    <lastmod>2017-10-08T07:54:00.000Z</lastmod>
+    <data>
+        <display>
+        <title>数据库NeDB文档翻译</title>
+        <pubTime>2017-09-14T16:00:00.000Z</pubTime>
+        
+        <tag>Javascript</tag>
+         
+        <tag>Node.js</tag>
+         
+        <tag>NeDB</tag>
+         
+        <tag>文件型数据库</tag>
+         
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://yuenshui.com/2017/10/08/NW-js%E5%A1%AB%E5%9D%91%E4%B9%8Bwindow-open/</loc>
     <lastmod>2017-10-08T03:18:11.000Z</lastmod>
     <data>
@@ -85,6 +108,8 @@
         <title>最小化安装Centos7 编译安装Nginx PHP7 MySQL5.7 Redis3.2 swoole1.8</title>
         <pubTime>2016-06-26T16:00:00.000Z</pubTime>
         
+        <tag>node.js</tag>
+         
         <tag>Centos7</tag>
          
         <tag>Nginx</tag>
@@ -96,8 +121,6 @@
         <tag>Redis3.2</tag>
          
         <tag>swoole1.8</tag>
-         
-        <tag>node.js</tag>
          
          
            
