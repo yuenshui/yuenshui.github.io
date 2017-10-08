@@ -140,8 +140,6 @@
     </summary>
     
     
-      <category term="node.js" scheme="http://yuenshui.com/tags/node-js/"/>
-    
       <category term="Centos7" scheme="http://yuenshui.com/tags/Centos7/"/>
     
       <category term="Nginx" scheme="http://yuenshui.com/tags/Nginx/"/>
@@ -153,6 +151,8 @@
       <category term="Redis3.2" scheme="http://yuenshui.com/tags/Redis3-2/"/>
     
       <category term="swoole1.8" scheme="http://yuenshui.com/tags/swoole1-8/"/>
+    
+      <category term="node.js" scheme="http://yuenshui.com/tags/node-js/"/>
     
   </entry>
   
