@@ -4,8 +4,27 @@
 
     
   <url>
+    <loc>http://yuenshui.com/2017/10/08/NW-js%E5%A1%AB%E5%9D%91%E4%B9%8Bwindow-open/</loc>
+    <lastmod>2017-10-08T02:41:44.000Z</lastmod>
+    <data>
+        <display>
+        <title>NW.js填坑之window.open</title>
+        <pubTime>2017-10-08T02:25:12.000Z</pubTime>
+        
+        <tag>NW.js</tag>
+         
+        <tag>window.open</tag>
+         
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://yuenshui.com/2017/03/02/Sudoku-solver/</loc>
-    <lastmod>2017-03-03T03:49:31.000Z</lastmod>
+    <lastmod>2017-03-03T12:14:03.000Z</lastmod>
     <data>
         <display>
         <title>数独解题器</title>
@@ -66,6 +85,8 @@
         <title>最小化安装Centos7 编译安装Nginx PHP7 MySQL5.7 Redis3.2 swoole1.8</title>
         <pubTime>2016-06-26T16:00:00.000Z</pubTime>
         
+        <tag>node.js</tag>
+         
         <tag>Centos7</tag>
          
         <tag>Nginx</tag>
@@ -77,8 +98,6 @@
         <tag>Redis3.2</tag>
          
         <tag>swoole1.8</tag>
-         
-        <tag>node.js</tag>
          
          
            
