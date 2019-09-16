@@ -1,4 +1,7 @@
 
+<html>
+  <header>
+    <title>MySQL 5.7 手册 - 中英文对照版</title>
 <script>
   function asyncFrame(from, to) {
     let fromUrl = document.getElementById(from + 'Frame').contentWindow.location.href;
@@ -32,7 +35,7 @@
     let mainFrame = document.getElementById('mainFrame');
     indexFrame.contentDocument.body.style.display = 'none';
     let link = indexFrame.contentDocument.createElement('link');
-    link.href = 'book.css';
+    link.href = '../book.css';
     link.rel = 'stylesheet';
     link.type = 'text/css';
     indexFrame.contentDocument.head.appendChild(link);
@@ -42,6 +45,7 @@
     for(let b = a.length, i = 0; i < b; i++) {
       a[i].innerHTML = a[i].innerHTML.replace(/^(\d+\.)*/, '');
       a[i].target = 'cnFrame';
+      // a[i].href = 'mysql-refmen-5.7-cn/' + a[i].href;
     }
     setTimeout(function() {
       indexFrame.contentDocument.body.style.display = '';
@@ -57,8 +61,10 @@
     }
   }
 </script>
+</header>
 <frameset id="mainFrame" id="mainFrame" cols="0,*,*" border="2" bordercolor="#aaa">
-  <frame id="indexFrame" onLoad="indexFrameLoad()" id="indexFrame" src="index.html"  />
+  <frame id="indexFrame" onLoad="indexFrameLoad()" id="indexFrame" src="mysql-refmen-5.7-cn/index.html"  />
   <frame id="cnFrame" onLoad="cnFrameLoad()" name="cnFrame" src="about:blank" />
   <frame id="enFrame" onLoad="enFrameLoad()" name="enFrame" src="about:blank" />
 </frameset>
+</html>
