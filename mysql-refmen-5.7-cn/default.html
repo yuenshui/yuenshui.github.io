@@ -1,0 +1,64 @@
+
+<script>
+  function asyncFrame(from, to) {
+    let fromUrl = document.getElementById(from + 'Frame').contentWindow.location.href;
+    if(fromUrl == 'about:blank') return 0;
+    let reg = `^(.*)${from}(\\/[^\\/]*)$`;
+    let toUrl = fromUrl.replace(new RegExp(reg), `$1${to}$2`);
+    if(document.getElementById(to + 'Frame').contentWindow.location.href == toUrl) return 0;
+    document.getElementById(to + 'Frame').src = toUrl;
+  }
+  function addEventPop(FN, fnHandler) {
+    document.getElementById(FN).contentWindow.addEventListener('popstate', fnHandler);
+  }
+  function cnFrameChange() {
+    asyncFrame('cn', 'en');
+  }
+  function cnFrameLoad() {
+    asyncFrame('cn', 'en');
+    addEventPop('cnFrame', cnFrameChange);
+    rewriteSection('cn');
+  }
+  function enFrameChange() {
+    asyncFrame('en', 'cn');
+  }
+  function enFrameLoad() {
+    asyncFrame('en', 'cn');
+    addEventPop('enFrame', enFrameChange);
+    rewriteSection('en');
+  }
+  function indexFrameLoad() {
+    let indexFrame = document.getElementById('indexFrame');
+    let mainFrame = document.getElementById('mainFrame');
+    indexFrame.contentDocument.body.style.display = 'none';
+    let link = indexFrame.contentDocument.createElement('link');
+    link.href = 'book.css';
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    indexFrame.contentDocument.head.appendChild(link);
+    mainFrame.cols = "300,*,*";
+
+    let a = indexFrame.contentDocument.getElementsByTagName('a');
+    for(let b = a.length, i = 0; i < b; i++) {
+      a[i].innerHTML = a[i].innerHTML.replace(/^(\d+\.)*/, '');
+      a[i].target = 'cnFrame';
+    }
+    setTimeout(function() {
+      indexFrame.contentDocument.body.style.display = '';
+    }, 0);
+  }
+  function rewriteSection(pre) {
+    rewriteSectionHTML(document.getElementById(pre + 'Frame').contentDocument.body.getElementsByTagName("h2"));
+    rewriteSectionHTML(document.getElementById(pre + 'Frame').contentDocument.body.getElementsByTagName("h3"));
+  }
+  function rewriteSectionHTML(e) {
+    for(let b = e.length, i = 0; i < b; i++) {
+      e[i].innerHTML = e[i].innerHTML.replace(/<a name="([^"]+)"><\/a>(.*)/, '<a name="$1"></a><a href="#$1">$2</a>');
+    }
+  }
+</script>
+<frameset id="mainFrame" id="mainFrame" cols="0,*,*" border="2" bordercolor="#aaa">
+  <frame id="indexFrame" onLoad="indexFrameLoad()" id="indexFrame" src="index.html"  />
+  <frame id="cnFrame" onLoad="cnFrameLoad()" name="cnFrame" src="about:blank" />
+  <frame id="enFrame" onLoad="enFrameLoad()" name="enFrame" src="about:blank" />
+</frameset>

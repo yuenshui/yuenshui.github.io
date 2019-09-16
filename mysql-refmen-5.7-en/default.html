@@ -1,0 +1,15 @@
+
+<script>
+  var leftform = document.getElementById('rightframe');
+  function rightframechange() {
+    console.log('rightframechange:', document.getElementById('rightframe').contentWindow.location.href);
+  }
+  function rightframeload() {
+    console.log('rightframeload:', document.getElementById('rightframe').contentWindow.location.href);
+    document.getElementById('rightframe').contentWindow.addEventListener('popstate', rightframechange);
+  }
+  </script>
+<frameset cols="300,*" border="1" bordercolor="#aaa">
+<frame src="index.html"  />
+<frame id="rightframe" onload="rightframeload()" name="rightframe" src="about:blank" />
+</frameset>
