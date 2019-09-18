@@ -7,11 +7,11 @@
 }
 
 dd {
-  margin-inline-start: 10px;
+  margin-inline-start: 16px;
 }
 a {
   white-space: normal nowrap;
-  display: block;
+  display: inline-block;
   white-space: nowrap;
   text-decoration: none !important;
 }
@@ -20,17 +20,47 @@ dl {
   margin-block-start: 0em;
   margin-block-end: 0em;
 }
-a:hover::after {
-  content: attr(data);
+a:hover {
+  /* content: attr(data);
   display: inline-block;
   padding: 10px 14px;
   border: 1px solid #ddd;
   border-radius: 5px;
   position: absolute;
   top: -50px;
-  left: -30px;
+  left: -30px; */
+  color: black !important;
+  font-weight: 800;
 }
 
 body {
   font-size: 12px;
+}
+.navfooter {
+  display: none;
+}
+@font-face {
+  font-family: "iconfont";
+  src: url("../img/fonts/iconfont.eot");
+  src: url("../img/fonts/iconfont.eot?#iefix") format("embedded-opentype"),
+    url("../img/fonts/iconfont.woff2") format("woff2"),
+    url("../img/fonts/iconfont.woff") format("woff"),
+    url("../img/fonts/iconfont.ttf") format("truetype"),
+    url("../img/fonts/iconfont.svg#iconfont") format("svg");
+}
+.folder {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0px 2px;
+  cursor: pointer;
+}
+
+.chapter,
+.section,
+.glossary,
+.appendix {
+  white-space: nowrap;
 }

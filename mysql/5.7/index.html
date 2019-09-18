@@ -30,6 +30,25 @@
     addEventPop('enFrame', enFrameChange);
     rewriteSection('en');
   }
+  function clickArticle(e) {
+    e.target.nextSibling.click();
+  }
+  function clickFolder(e) {
+    let n = e.target.parentNode.parentNode.nextSibling;
+    testB = n;
+    if(n.style.display == 'none') {
+      n.style.display = '';
+      localStorage.setItem(n.id, 1);
+    } else {
+      n.style.display = 'none';
+      localStorage.removeItem(n.id);
+      let dList = n.getElementsByTagName('DD');
+      for(let b = dList.length, i = 0; i < b; i++) {
+        localStorage.removeItem(dList[i].id);
+        dList[i].style.display = 'none';
+      }
+    }
+  }
   function indexFrameLoad() {
     let indexFrame = document.getElementById('indexFrame');
     let mainFrame = document.getElementById('mainFrame');
@@ -43,9 +62,27 @@
 
     let a = indexFrame.contentDocument.getElementsByTagName('a');
     for(let b = a.length, i = 0; i < b; i++) {
+      if(['chapter', 'section', 'glossary', 'appendix'].indexOf(a[i].parentNode.className) == -1) continue;
       a[i].innerHTML = a[i].innerHTML.replace(/^(\d+\.)*/, '');
       a[i].target = 'cnFrame';
-      // a[i].href = 'mysql-refmen-5.7-cn/' + a[i].href;
+      let butNode = indexFrame.contentDocument.createElement('span');
+      butNode.className = "folder"
+
+      if(a[i].parentNode.parentNode.nextSibling && a[i].parentNode.parentNode.nextSibling.nodeName == 'DD') {
+        butNode.innerHTML = "&#xe7d1;";
+        butNode.addEventListener('click', clickFolder);
+      } else {
+        butNode.innerHTML = "&#xe601;";
+        butNode.addEventListener('click', clickArticle);
+      }
+      a[i].parentNode.insertBefore(butNode, a[i]);
+    }
+    let dd = indexFrame.contentDocument.getElementsByTagName('dd');
+    for(let b = dd.length, i = 0; i < b; i++) {
+      dd[i].id = 'dd_' + i;
+      if(!localStorage.getItem(dd[i].id)) {
+        dd[i].style.display = 'none';
+      }
     }
     setTimeout(function() {
       indexFrame.contentDocument.body.style.display = '';
@@ -54,6 +91,7 @@
   function rewriteSection(pre) {
     rewriteSectionHTML(document.getElementById(pre + 'Frame').contentDocument.body.getElementsByTagName("h2"));
     rewriteSectionHTML(document.getElementById(pre + 'Frame').contentDocument.body.getElementsByTagName("h3"));
+    rewriteSectionHTML(document.getElementById(pre + 'Frame').contentDocument.body.getElementsByTagName("h4"));
   }
   function rewriteSectionHTML(e) {
     for(let b = e.length, i = 0; i < b; i++) {
