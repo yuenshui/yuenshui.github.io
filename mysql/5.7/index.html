@@ -33,14 +33,21 @@
   function clickArticle(e) {
     e.target.nextSibling.click();
   }
+  const icon = {
+    folderClose: '&#xe7d1;',
+    folderOpen: '&#xe7d2;',
+    article: '&#xe601;'
+  }
   function clickFolder(e) {
     let n = e.target.parentNode.parentNode.nextSibling;
     testB = n;
     if(n.style.display == 'none') {
       n.style.display = '';
       localStorage.setItem(n.id, 1);
+      e.target.innerHTML = icon.folderOpen;
     } else {
       n.style.display = 'none';
+      e.target.innerHTML = icon.folderClose;
       localStorage.removeItem(n.id);
       let dList = n.getElementsByTagName('DD');
       for(let b = dList.length, i = 0; i < b; i++) {
@@ -49,6 +56,7 @@
       }
     }
   }
+  var testB;
   function indexFrameLoad() {
     let indexFrame = document.getElementById('indexFrame');
     let mainFrame = document.getElementById('mainFrame');
@@ -69,10 +77,10 @@
       butNode.className = "folder"
 
       if(a[i].parentNode.parentNode.nextSibling && a[i].parentNode.parentNode.nextSibling.nodeName == 'DD') {
-        butNode.innerHTML = "&#xe7d1;";
+        butNode.innerHTML = icon.folderClose;
         butNode.addEventListener('click', clickFolder);
       } else {
-        butNode.innerHTML = "&#xe601;";
+        butNode.innerHTML = icon.article;
         butNode.addEventListener('click', clickArticle);
       }
       a[i].parentNode.insertBefore(butNode, a[i]);
@@ -82,6 +90,8 @@
       dd[i].id = 'dd_' + i;
       if(!localStorage.getItem(dd[i].id)) {
         dd[i].style.display = 'none';
+      } else {
+        dd[i].previousSibling.firstElementChild.firstElementChild.innerHTML = icon.folderOpen;
       }
     }
     setTimeout(function() {
